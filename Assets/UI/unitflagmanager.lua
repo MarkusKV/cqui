@@ -794,6 +794,7 @@ end
 function UnitFlag.UpdatePromotions( self )
 	self.m_Instance.Promotion_Flag:SetHide(true);
 	local pUnit : table = self:GetUnit();
+	local isLocalPlayerUnit: boolean = pUnit:GetOwner() == Game:GetLocalPlayer(); --ARISTOS: hide promotion/charge info if not local player's unit!
 	if pUnit ~= nil then
 		-- If this unit is levied (ie. from a city-state), showing that takes precedence
 		local iLevyTurnsRemaining = GetLevyTurnsRemaining(pUnit);
@@ -801,7 +802,7 @@ function UnitFlag.UpdatePromotions( self )
 			self.m_Instance.UnitNumPromotions:SetText("[ICON_Turn]");
 			self.m_Instance.Promotion_Flag:SetHide(false);
 		-- Otherwise, show the experience level
-		elseif (GameInfo.Units[pUnit:GetUnitType()].UnitType == "UNIT_BUILDER") or (GameInfo.Units[pUnit:GetUnitType()].UnitType == "UNIT_MILITARY_ENGINEER") then
+		elseif ((GameInfo.Units[pUnit:GetUnitType()].UnitType == "UNIT_BUILDER") or (GameInfo.Units[pUnit:GetUnitType()].UnitType == "UNIT_MILITARY_ENGINEER")) and isLocalPlayerUnit then
 			local uCharges = pUnit:GetBuildCharges();
 			self.m_Instance.New_Promotion_Flag:SetHide(true);
 			self.m_Instance.UnitNumPromotions:SetText(uCharges);
@@ -815,7 +816,7 @@ function UnitFlag.UpdatePromotions( self )
 				local UnitXP = unitExperience:GetExperiencePoints();
 				local UnitMaxXP = unitExperience:GetExperienceForNextLevel();
 				self.m_Instance.New_Promotion_Flag:SetHide(true);
-				if (UnitXP/UnitMaxXP) == 1 then
+				if (UnitXP/UnitMaxXP) == 1 and isLocalPlayerUnit then
 					self.m_Instance.New_Promotion_Flag:SetHide(false);
 					self.m_Instance.UnitNumPromotions:SetText("[COLOR:StatBadCS]+[ENDCOLOR]");
 					self.m_Instance.Promotion_Flag:SetHide(false);
